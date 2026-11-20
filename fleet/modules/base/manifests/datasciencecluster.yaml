@@ -11,27 +11,27 @@ spec:
     dashboard:
       managementState: Managed
 
-    # ---- training: ai.example.com/training=true ---------------------------
+    # ---- training: ai.fleet/training=true ---------------------------
     workbenches:
-      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.example.com/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
     aipipelines:
-      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.example.com/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
     ray:
-      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.example.com/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
     trainingoperator:
-      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.example.com/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
     # Kueue is provided by the Red Hat build of Kueue operator, so RHOAI uses
     # "Unmanaged" (integrate) rather than "Managed".
     kueue:
-      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.example.com/training") "true" hub}}Unmanaged{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Unmanaged{{hub else hub}}Removed{{hub end hub}}'
 
-    # ---- inference: ai.example.com/inference=true -------------------------
+    # ---- inference: ai.fleet/inference=true -------------------------
     kserve:
-      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.example.com/inference") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/inference") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
 
     # ---- shared: on if the cluster trains OR serves -----------------------
     modelregistry:
-      managementState: '{{hub if or (eq (index .ManagedClusterLabels "ai.example.com/training") "true") (eq (index .ManagedClusterLabels "ai.example.com/inference") "true") hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      managementState: '{{hub if or (eq (index .ManagedClusterLabels "ai.fleet/training") "true") (eq (index .ManagedClusterLabels "ai.fleet/inference") "true") hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
 
     # ---- explicitly off (keeps the DSC deterministic) ---------------------
     feastoperator:

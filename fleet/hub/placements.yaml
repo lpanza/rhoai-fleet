@@ -10,7 +10,7 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchLabels:
-            ai.example.com/rhoai: "true"
+            ai.fleet/rhoai: "true"
 ---
 # Training capability (part 2). Requires the base label too.
 apiVersion: cluster.open-cluster-management.io/v1beta1
@@ -23,8 +23,8 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchLabels:
-            ai.example.com/rhoai: "true"
-            ai.example.com/training: "true"
+            ai.fleet/rhoai: "true"
+            ai.fleet/training: "true"
 ---
 # Inference capability (part 3). Requires the base label too.
 apiVersion: cluster.open-cluster-management.io/v1beta1
@@ -37,5 +37,5 @@ spec:
     - requiredClusterSelector:
         labelSelector:
           matchLabels:
-            ai.example.com/rhoai: "true"
-            ai.example.com/inference: "true"
+            ai.fleet/rhoai: "true"
+            ai.fleet/inference: "true"
