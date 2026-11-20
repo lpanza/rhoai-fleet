@@ -1,0 +1,15 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: rhods-operator
+spec:
+  remediationAction: enforce
+  severity: high
+  complianceType: musthave
+  subscription:
+    name: rhods-operator
+    namespace: redhat-ods-operator
+    channel: stable-3.5          # pin the minor; use stable-3.x to follow 3.x
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+  upgradeApproval: Automatic

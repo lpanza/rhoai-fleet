@@ -1,0 +1,15 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: cert-manager-operator
+spec:
+  remediationAction: enforce
+  severity: high
+  complianceType: musthave
+  subscription:
+    name: openshift-cert-manager-operator
+    namespace: cert-manager-operator
+    channel: stable-v1
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+  upgradeApproval: Automatic

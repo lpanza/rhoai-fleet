@@ -1,0 +1,31 @@
+# The default OpenShift GitOps instance cannot manage ACM governance objects
+# out of the box. Grant its application controller exactly what it needs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-acm-policy-manager
+rules:
+  - apiGroups: ["policy.open-cluster-management.io"]
+    resources: ["policies", "policysets", "placementbindings"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["placements", "managedclustersetbindings"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # Required to create a ManagedClusterSetBinding for the "default" set.
+  - apiGroups: ["cluster.open-cluster-management.io"]
+    resources: ["managedclustersets/bind"]
+    resourceNames: ["default"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: argocd-acm-policy-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-acm-policy-manager
+subjects:
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-application-controller
+    namespace: openshift-gitops

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhoai-fleet
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_ORG/rhoai-fleet.git   # <-- change me
+    targetRevision: main
+    path: fleet
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rhoai-policies
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

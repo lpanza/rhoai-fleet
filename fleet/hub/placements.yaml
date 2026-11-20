@@ -1,0 +1,41 @@
+# Every RHOAI cluster: the entry point. Nothing AI-related lands on a cluster
+# without this label.
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: rhoai
+spec:
+  clusterSets: ["default"]
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            ai.example.com/rhoai: "true"
+---
+# Training capability (part 2). Requires the base label too.
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: rhoai-training
+spec:
+  clusterSets: ["default"]
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            ai.example.com/rhoai: "true"
+            ai.example.com/training: "true"
+---
+# Inference capability (part 3). Requires the base label too.
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: rhoai-inference
+spec:
+  clusterSets: ["default"]
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            ai.example.com/rhoai: "true"
+            ai.example.com/inference: "true"

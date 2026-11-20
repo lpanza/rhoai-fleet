@@ -1,0 +1,5 @@
+# Hub namespace that holds every root Policy, Placement and PlacementBinding.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhoai-policies

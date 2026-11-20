@@ -1,0 +1,37 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: rhoai-base
+placementBindingDefaults:
+  name: rhoai-base
+policyDefaults:
+  namespace: rhoai-policies
+  remediationAction: enforce
+  severity: high
+  categories: ["CM Configuration Management"]
+  controls: ["CM-2 Baseline Configuration"]
+  standards: ["NIST SP 800-53"]
+  placement:
+    placementName: rhoai          # defined in fleet/hub/placements.yaml
+  # One policy template per manifest, applied in the listed order.
+  consolidateManifests: false
+  orderManifests: true
+policies:
+  # Shared by training (Kueue, JobSet) and inference (LWS, Connectivity Link).
+  - name: rhoai-cert-manager
+    manifests:
+      - path: manifests/cert-manager-namespace.yaml
+      - path: manifests/cert-manager-operator.yaml
+
+  - name: rhoai-operator
+    manifests:
+      - path: manifests/rhoai-namespace.yaml
+      - path: manifests/rhoai-operator.yaml
+
+  # The single DataScienceCluster. Waits for the operator to be installed.
+  - name: rhoai-datasciencecluster
+    orderManifests: false
+    dependencies:
+      - name: rhoai-operator
+    manifests:
+      - path: manifests/datasciencecluster.yaml
