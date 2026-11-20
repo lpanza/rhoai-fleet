@@ -1,46 +1,107 @@
 # One DataScienceCluster per cluster, owned by one policy. Each component is
 # switched on by a capability label on the ManagedCluster, resolved on the hub
 # with ACM hub templates. Adding or removing a label flips Managed <-> Removed.
+#
+# Every component (and every sub-component with its own managementState) is
+# listed explicitly, so operator defaults never decide what runs.
+# Schema: RHOAI 3.5 (datasciencecluster.opendatahub.io/v2).
 apiVersion: datasciencecluster.opendatahub.io/v2
 kind: DataScienceCluster
 metadata:
   name: default-dsc
+  labels:
+    app.kubernetes.io/name: datasciencecluster
 spec:
   components:
-    # ---- always on -------------------------------------------------------
+    # ======================================================================
+    # Always on
+    # ======================================================================
     dashboard:
       managementState: Managed
 
-    # ---- training: ai.fleet/training=true ---------------------------
+    # ======================================================================
+    # Training: ai.fleet/training=true
+    # ======================================================================
     workbenches:
+      workbenchNamespace: rhods-notebooks
       managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+
     aipipelines:
       managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      argoWorkflowsControllers:
+        managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+
     ray:
       managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
-    trainingoperator:
+
+    # Kubeflow Trainer v2 (TrainJob). Needs the JobSet operator (training module).
+    trainer:
       managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
-    # Kueue is provided by the Red Hat build of Kueue operator, so RHOAI uses
-    # "Unmanaged" (integrate) rather than "Managed".
+
+    # Kueue is provided by the Red Hat build of Kueue operator (training
+    # module), so RHOAI integrates with it ("Unmanaged") instead of managing it.
+    # Queues are created by the training module, not auto-created here.
     kueue:
+      autoCreateQueues: false
+      defaultClusterQueueName: default
+      defaultLocalQueueName: default
       managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/training") "true" hub}}Unmanaged{{hub else hub}}Removed{{hub end hub}}'
 
-    # ---- inference: ai.fleet/inference=true -------------------------
+    # ======================================================================
+    # Inference: ai.fleet/inference=true
+    # ======================================================================
     kserve:
       managementState: '{{hub if eq (index .ManagedClusterLabels "ai.fleet/inference") "true" hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
+      rawDeploymentServiceConfig: Headless
+      # Opt-in extras, revisited in part 3. NIM defaults to Managed if omitted.
+      nim:
+        airGapped: false
+        managementState: Removed
+      modelCache:
+        managementState: Removed
+      wva:
+        managementState: Removed
+      # Deprecated in 3.5 in favour of aigateway.modelsAsAService.
+      modelsAsService:
+        managementState: Removed
 
-    # ---- shared: on if the cluster trains OR serves -----------------------
+    # ======================================================================
+    # Shared: on if the cluster trains OR serves
+    # ======================================================================
     modelregistry:
+      registriesNamespace: rhoai-model-registries
       managementState: '{{hub if or (eq (index .ManagedClusterLabels "ai.fleet/training") "true") (eq (index .ManagedClusterLabels "ai.fleet/inference") "true") hub}}Managed{{hub else hub}}Removed{{hub end hub}}'
 
-    # ---- explicitly off (keeps the DSC deterministic) ---------------------
-    feastoperator:
+    # ======================================================================
+    # Explicitly off: not part of this series (yet)
+    # ======================================================================
+    # Kubeflow Training Operator v1, superseded by trainer (v2).
+    trainingoperator:
       managementState: Removed
-    trustyai:
+    # Models-as-a-Service and batch inference gateway (part 3 candidate).
+    aigateway:
+      managementState: Removed
+      modelsAsAService:
+        managementState: Removed
+      batchGateway:
+        managementState: Removed
+    feastoperator:
       managementState: Removed
     mlflowoperator:
       managementState: Removed
+    sparkoperator:
+      managementState: Removed
     ogx:
       managementState: Removed
+    # Renamed to ogx in 3.5; deprecated.
     llamastackoperator:
       managementState: Removed
+    mcplifecycleoperator:
+      managementState: Removed
+    trustyai:
+      managementState: Removed
+      mcpGuardrailsMode: false
+      eval:
+        lmeval:
+          permitCodeExecution: deny
+          permitOnline: deny
