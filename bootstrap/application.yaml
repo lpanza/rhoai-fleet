@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/YOUR_ORG/rhoai-fleet.git   # <-- change me
+    repoURL: https://github.com/lpanza/rhoai-fleet.git   # <-- change me
     targetRevision: main
     path: fleet
   destination:
