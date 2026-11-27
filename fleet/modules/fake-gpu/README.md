@@ -31,3 +31,7 @@ git diff manifests/
 collide with the real GPU operator: a fake operator CSV in
 `openshift-operator-lifecycle-manager`, the `clusterlogging-collector-metrics`
 RBAC, the `nvidia` RuntimeClass, the NVIDIA CRDs and the KWOK components.
+
+The chart is installed in `gpu-operator` on purpose: the fake `nvidia-smi`
+hard-codes `http://topology-server.gpu-operator`. The real NVIDIA GPU Operator on
+OpenShift uses `nvidia-gpu-operator`, so the names never collide.

@@ -5,7 +5,10 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 CHART_VERSION=0.2.1
-export NAMESPACE=fake-gpu-operator
+# The fake nvidia-smi hard-codes http://topology-server.gpu-operator, so the
+# chart must live in "gpu-operator" (the real NVIDIA operator on OpenShift uses
+# "nvidia-gpu-operator", so they never collide).
+export NAMESPACE=gpu-operator
 OUT=manifests/fake-gpu-operator.yaml
 
 helm template fake-gpu-operator \

@@ -5,35 +5,35 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nvidia-device-plugin
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 ---
 # Source: fake-gpu-operator/templates/status-exporter/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: status-exporter
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 ---
 # Source: fake-gpu-operator/templates/status-updater/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: status-updater
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 ---
 # Source: fake-gpu-operator/templates/topology-server/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: topology-server
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 ---
 # Source: fake-gpu-operator/templates/status-exporter/hostpath-init-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: hostpath-init
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 data:
   init.sh: |
     #!/bin/bash
@@ -60,7 +60,7 @@ data:
 kind: ConfigMap
 metadata:
   name: topology
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 ---
 # Source: fake-gpu-operator/templates/device-plugin/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -262,7 +262,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nvidia-device-plugin
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 ---
 # Source: fake-gpu-operator/templates/device-plugin/ocp/rbac.yml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -272,7 +272,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: nvidia-device-plugin
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -290,7 +290,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: status-exporter
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 ---
 # Source: fake-gpu-operator/templates/status-updater/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -304,7 +304,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: status-updater
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 ---
 # Source: fake-gpu-operator/templates/status-updater/pod-patch-rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -318,7 +318,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: status-updater
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 ---
 # Source: fake-gpu-operator/templates/topology-server/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -332,14 +332,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: topology-server
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 ---
 # Source: fake-gpu-operator/templates/status-updater/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: fake-status-updater
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 rules:
   - apiGroups:
       - apps
@@ -358,7 +358,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: fake-status-updater
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 roleRef:
   kind: Role
   apiGroup: rbac.authorization.k8s.io
@@ -366,7 +366,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: status-updater
-    namespace: "fake-gpu-operator"
+    namespace: "gpu-operator"
 ---
 # Source: fake-gpu-operator/templates/status-exporter/service.yaml
 apiVersion: v1
@@ -377,7 +377,7 @@ metadata:
   labels:
     app: nvidia-dcgm-exporter
   name: nvidia-dcgm-exporter
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   ports:
     - name: gpu-metrics
@@ -394,7 +394,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: topology-server
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   selector:
     app: topology-server
@@ -412,7 +412,7 @@ metadata:
   name: device-plugin
   labels:
     app: device-plugin
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   selector:
     matchLabels:
@@ -444,7 +444,7 @@ spec:
             - name: TOPOLOGY_CM_NAME
               value: topology
             - name: TOPOLOGY_CM_NAMESPACE
-              value: "fake-gpu-operator"
+              value: "gpu-operator"
           name: nvidia-device-plugin-ctr
           securityContext:
             privileged: true
@@ -492,7 +492,7 @@ metadata:
     app: nvidia-dcgm-exporter
     component: status-exporter
     app.kubernetes.io/name: nvidia-container-toolkit
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   selector:
     matchLabels:
@@ -525,7 +525,7 @@ spec:
             - name: TOPOLOGY_CM_NAME
               value: topology
             - name: TOPOLOGY_CM_NAMESPACE
-              value: "fake-gpu-operator"
+              value: "gpu-operator"
             - name: TOPOLOGY_MAX_EXPORT_INTERVAL
               value: "10s"
             - name: RESOURCE_RESERVATION_NAMESPACE
@@ -582,7 +582,7 @@ metadata:
     component: status-exporter
     app.kubernetes.io/name: nvidia-container-toolkit
     run.ai/fake-node-deployment-template: "true"
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   replicas: 0
   selector:
@@ -616,7 +616,7 @@ spec:
             - name: TOPOLOGY_CM_NAME
               value: topology
             - name: TOPOLOGY_CM_NAMESPACE
-              value: "fake-gpu-operator"
+              value: "gpu-operator"
             - name: TOPOLOGY_MAX_EXPORT_INTERVAL
               value: "10s"
             - name: RESOURCE_RESERVATION_NAMESPACE
@@ -657,7 +657,7 @@ metadata:
     checksum/topology: b3bd261d8c073457a21516255ce9b257776bffee23bf54bbe418725f23b2b8fc
   labels:
     app: status-updater
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   selector:
     matchLabels:
@@ -687,9 +687,9 @@ spec:
             - name: TOPOLOGY_CM_NAME
               value: topology
             - name: TOPOLOGY_CM_NAMESPACE
-              value: "fake-gpu-operator"
+              value: "gpu-operator"
             - name: FAKE_GPU_OPERATOR_NAMESPACE
-              value: "fake-gpu-operator"
+              value: "gpu-operator"
             - name: RESOURCE_RESERVATION_NAMESPACE
               value: "runai-reservation"
             - name: PROMETHEUS_URL
@@ -710,7 +710,7 @@ metadata:
   name: topology-server
   labels:
     app: topology-server
-  namespace: fake-gpu-operator
+  namespace: gpu-operator
 spec:
   selector:
     matchLabels:
@@ -738,7 +738,7 @@ spec:
             - name: TOPOLOGY_CM_NAME
               value: topology
             - name: TOPOLOGY_CM_NAMESPACE
-              value: "fake-gpu-operator"
+              value: "gpu-operator"
           ports:
             - name: http
               containerPort: 8080
