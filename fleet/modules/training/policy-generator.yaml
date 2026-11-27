@@ -55,3 +55,20 @@ policies:
         name: kueue-localqueue
       - path: manifests/hardwareprofile.yaml
         name: training-hardwareprofile
+
+  # GPU queues: only where the cluster trains AND has GPUs (fake or real).
+  # Overrides the module's placement with the intersection.
+  - name: rhoai-training-gpu-queues
+    placement:
+      placementName: rhoai-training-gpu
+    dependencies:
+      - name: rhoai-training-queues   # same module; always placed where we are
+    manifests:
+      - path: manifests/gpu-resourceflavor.yaml
+        name: kueue-gpu-resourceflavor
+      - path: manifests/gpu-clusterqueue.yaml
+        name: kueue-gpu-clusterqueue
+      - path: manifests/gpu-localqueue.yaml
+        name: kueue-gpu-localqueue
+      - path: manifests/gpu-hardwareprofile.yaml
+        name: training-gpu-hardwareprofile

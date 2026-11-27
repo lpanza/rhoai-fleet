@@ -40,6 +40,24 @@ spec:
             ai.fleet/rhoai: "true"
             ai.fleet/inference: "true"
 ---
+# Training on GPUs: the intersection of the training capability and any GPU
+# capability (ai.fleet/gpu=fake today, =nvidia in part 4).
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: rhoai-training-gpu
+spec:
+  clusterSets: ["default"]
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            ai.fleet/rhoai: "true"
+            ai.fleet/training: "true"
+          matchExpressions:
+            - key: ai.fleet/gpu
+              operator: Exists
+---
 # Simulated GPUs for labs (run-ai fake-gpu-operator). Requires the base label
 # and ai.fleet/fake-gpu-node=<node> to say which node gets the 8 fake H100s.
 apiVersion: cluster.open-cluster-management.io/v1beta1

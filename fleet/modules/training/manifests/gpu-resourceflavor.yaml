@@ -1,0 +1,15 @@
+# One flavor per GPU model. Kueue injects these nodeLabels as a nodeSelector
+# into admitted pods, so GPU workloads land on H100 nodes. The labels are set
+# by NVIDIA GPU Feature Discovery (real GPUs) and by the fake-gpu-operator.
+apiVersion: kueue.x-k8s.io/v1beta2
+kind: ResourceFlavor
+metadata:
+  name: nvidia-h100
+spec:
+  nodeLabels:
+    nvidia.com/gpu.product: NVIDIA-H100-80GB-HBM3
+  # Real GPU nodes are often tainted; harmless where they aren't.
+  tolerations:
+    - key: nvidia.com/gpu
+      operator: Exists
+      effect: NoSchedule
