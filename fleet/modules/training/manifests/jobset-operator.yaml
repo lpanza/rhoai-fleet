@@ -1,0 +1,21 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: job-set
+spec:
+  remediationAction: enforce
+  severity: high
+  complianceType: musthave
+  # JobSet installs in OwnNamespace mode, so spell out the OperatorGroup.
+  operatorGroup:
+    name: openshift-jobset-operator
+    namespace: openshift-jobset-operator
+    targetNamespaces:
+      - openshift-jobset-operator
+  subscription:
+    name: job-set
+    namespace: openshift-jobset-operator
+    channel: stable-v1.0
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+  upgradeApproval: Automatic

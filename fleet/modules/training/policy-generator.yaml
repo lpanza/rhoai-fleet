@@ -1,0 +1,57 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: rhoai-training
+placementBindingDefaults:
+  name: rhoai-training
+policyDefaults:
+  namespace: rhoai-policies
+  remediationAction: enforce
+  severity: high
+  categories: ["CM Configuration Management"]
+  controls: ["CM-2 Baseline Configuration"]
+  standards: ["NIST SP 800-53"]
+  placement:
+    placementName: rhoai-training   # rhoai=true AND training=true
+  consolidateManifests: false
+  orderManifests: true
+policies:
+  # Red Hat build of Kueue. RHOAI integrates with it (kueue: Unmanaged in the
+  # DSC) and creates the Kueue CR "cluster" itself, so we only install it.
+  - name: rhoai-kueue-operator
+    dependencies:
+      - name: rhoai-cert-manager      # base module; always placed where we are
+    manifests:
+      - path: manifests/kueue-namespace.yaml
+        name: kueue-namespace
+      - path: manifests/kueue-operator.yaml
+
+  # JobSet runs the pods behind every Kubeflow Trainer v2 TrainJob. The
+  # trainer component waits for a JobSetOperator named "cluster".
+  - name: rhoai-jobset-operator
+    dependencies:
+      - name: rhoai-cert-manager
+    manifests:
+      - path: manifests/jobset-namespace.yaml
+        name: jobset-namespace
+      - path: manifests/jobset-operator.yaml
+      - path: manifests/jobset-instance.yaml
+        name: jobset-instance
+
+  # Queues, the training project and its hardware profile. Needs the Kueue
+  # CRDs (kueue operator) and the HardwareProfile CRD (RHOAI operator).
+  - name: rhoai-training-queues
+    dependencies:
+      - name: rhoai-kueue-operator
+      - name: rhoai-operator          # base module
+    manifests:
+      - path: manifests/resourceflavor.yaml
+        name: kueue-resourceflavor
+      - path: manifests/clusterqueue.yaml
+        name: kueue-clusterqueue
+      - path: manifests/training-namespace.yaml
+        name: training-namespace
+      - path: manifests/localqueue.yaml
+        name: kueue-localqueue
+      - path: manifests/hardwareprofile.yaml
+        name: training-hardwareprofile

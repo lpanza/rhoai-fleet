@@ -1,0 +1,10 @@
+# The operand. Without it the DSC reports trainer as PreConditionFailed
+# ("JobSetOperator CR with name 'cluster' not found").
+apiVersion: operator.openshift.io/v1
+kind: JobSetOperator
+metadata:
+  name: cluster
+spec:
+  managementState: Managed
+  logLevel: Normal
+  operatorLogLevel: Normal

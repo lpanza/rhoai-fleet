@@ -1,0 +1,30 @@
+# What users pick in the dashboard for workbenches and jobs. Scheduling type
+# Queue means "go through Kueue", using the LocalQueue "default".
+apiVersion: infrastructure.opendatahub.io/v1
+kind: HardwareProfile
+metadata:
+  name: cpu-small
+  namespace: redhat-ods-applications
+  annotations:
+    opendatahub.io/display-name: CPU small
+    opendatahub.io/description: CPU-only workbenches and training jobs, admitted through the Kueue queue "default".
+    opendatahub.io/disabled: "false"
+    opendatahub.io/dashboard-feature-visibility: "[]"
+spec:
+  identifiers:
+    - identifier: cpu
+      displayName: CPU
+      resourceType: CPU
+      minCount: 1
+      defaultCount: 2
+      maxCount: 4
+    - identifier: memory
+      displayName: Memory
+      resourceType: Memory
+      minCount: 2Gi
+      defaultCount: 8Gi
+      maxCount: 16Gi
+  scheduling:
+    type: Queue
+    kueue:
+      localQueueName: default

@@ -1,0 +1,9 @@
+# The namespaced handle that jobs (kueue.x-k8s.io/queue-name) and hardware
+# profiles point to. Named "default" to match the DSC's defaultLocalQueueName.
+apiVersion: kueue.x-k8s.io/v1beta2
+kind: LocalQueue
+metadata:
+  name: default
+  namespace: rhoai-training
+spec:
+  clusterQueue: default

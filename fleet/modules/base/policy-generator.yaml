@@ -21,11 +21,13 @@ policies:
   - name: rhoai-cert-manager
     manifests:
       - path: manifests/cert-manager-namespace.yaml
+        name: cert-manager-namespace
       - path: manifests/cert-manager-operator.yaml
 
   - name: rhoai-operator
     manifests:
       - path: manifests/rhoai-namespace.yaml
+        name: rhoai-namespace
       - path: manifests/rhoai-operator.yaml
 
   # The single DataScienceCluster. Waits for the operator to be installed.
@@ -35,3 +37,4 @@ policies:
       - name: rhoai-operator
     manifests:
       - path: manifests/datasciencecluster.yaml
+        name: rhoai-datasciencecluster

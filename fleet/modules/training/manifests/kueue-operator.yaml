@@ -1,0 +1,16 @@
+apiVersion: policy.open-cluster-management.io/v1beta1
+kind: OperatorPolicy
+metadata:
+  name: kueue-operator
+spec:
+  remediationAction: enforce
+  severity: high
+  complianceType: musthave
+  # No operatorGroup: the controller creates an AllNamespaces one.
+  subscription:
+    name: kueue-operator
+    namespace: openshift-kueue-operator
+    channel: stable-v1.5
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+  upgradeApproval: Automatic

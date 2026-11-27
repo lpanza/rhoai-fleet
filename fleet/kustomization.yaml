@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
 - hub
 - modules/base
-# - modules/training    # part 2
+- modules/training
 # - modules/inference   # part 3

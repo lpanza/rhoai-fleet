@@ -1,0 +1,13 @@
+# A data science project (shows up in the dashboard) whose workloads are
+# admitted by Kueue. The Red Hat build of Kueue only manages namespaces that
+# carry kueue.openshift.io/managed=true.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rhoai-training
+  annotations:
+    openshift.io/display-name: Training
+    openshift.io/description: Training jobs (Kubeflow Trainer v2) admitted through Kueue
+  labels:
+    opendatahub.io/dashboard: "true"
+    kueue.openshift.io/managed: "true"
