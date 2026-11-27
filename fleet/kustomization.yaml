@@ -5,4 +5,5 @@ resources:
 - hub
 - modules/base
 - modules/training
+- modules/fake-gpu    # lab only: simulated GPUs
 # - modules/inference   # part 3

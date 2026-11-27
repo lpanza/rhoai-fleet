@@ -1,0 +1,12 @@
+# The device plugin and DCGM exporter are privileged DaemonSets with hostPath
+# mounts. The chart's RBAC grants their ServiceAccounts the privileged SCC;
+# Pod Security Admission must allow it too.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fake-gpu-operator
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
+    security.openshift.io/scc.podSecurityLabelSync: "false"

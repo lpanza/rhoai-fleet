@@ -1,0 +1,10 @@
+# Put ONE node of the cluster in the simulated "h100" pool. Which node is a
+# per-cluster choice, read on the hub from the ManagedCluster label
+# ai.fleet/fake-gpu-node=<node name>. The status-updater then labels that
+# node for the fake device plugin, which advertises nvidia.com/gpu: 8.
+apiVersion: v1
+kind: Node
+metadata:
+  name: '{{hub index .ManagedClusterLabels "ai.fleet/fake-gpu-node" hub}}'
+  labels:
+    run.ai/simulated-gpu-node-pool: h100

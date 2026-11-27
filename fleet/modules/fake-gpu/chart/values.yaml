@@ -1,0 +1,24 @@
+# Values for run-ai/fake-gpu-operator, rendered by ../render.sh.
+# Simulates one node pool of 8x NVIDIA H100 80GB on OpenShift.
+environment:
+  openshift: true              # grants the SAs "use" on the privileged SCC
+
+topology:
+  nodePoolLabelKey: run.ai/simulated-gpu-node-pool
+  migStrategy: none
+  nodePools:
+    default: null              # drop the chart's built-in Tesla-K80 pool
+    h100:                      # nodes labeled run.ai/simulated-gpu-node-pool=h100
+      gpuProduct: NVIDIA-H100-80GB-HBM3
+      gpuCount: 8
+      gpuMemory: 81559         # MiB, what nvidia-smi reports for an H100 80GB
+
+# Not needed for a plain device-plugin simulation.
+builtinProfiles:
+  enabled: false               # NVML mock profiles (only for backend: mock)
+kwokGpuDevicePlugin:
+  enabled: false               # no KWOK nodes
+migFaker:
+  enabled: false               # no MIG
+runtimeClass:
+  enabled: false               # RuntimeClass "nvidia" belongs to the real GPU operator

@@ -39,3 +39,21 @@ spec:
           matchLabels:
             ai.fleet/rhoai: "true"
             ai.fleet/inference: "true"
+---
+# Simulated GPUs for labs (run-ai fake-gpu-operator). Requires the base label
+# and ai.fleet/fake-gpu-node=<node> to say which node gets the 8 fake H100s.
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: rhoai-fake-gpu
+spec:
+  clusterSets: ["default"]
+  predicates:
+    - requiredClusterSelector:
+        labelSelector:
+          matchLabels:
+            ai.fleet/rhoai: "true"
+            ai.fleet/gpu: fake
+          matchExpressions:
+            - key: ai.fleet/fake-gpu-node
+              operator: Exists
